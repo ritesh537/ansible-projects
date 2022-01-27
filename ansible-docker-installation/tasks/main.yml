@@ -1,0 +1,30 @@
+---
+# tasks file for ansible-docker-installation
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: installing all dependencies
+  yum:
+   name: 
+    - yum-utils
+    - device-mapper-persistent-data 
+    - lvm2
+   state: present
+
+- name: Add yum repos
+  yum_repository:
+   name: docker-repo
+   description: docker repo
+   baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+
+- name: Install Docker
+  yum:
+   name: docker
+
+- name: Starting and enabling docker service 
+  service:
+   name: docker
+   state: started
+   enabled: yes
