@@ -1,0 +1,19 @@
+---
+# tasks file for ansible-system-facts-role
+- name: Gather information about all NICs
+  shell:  lshw -class network -short | sed 1,2d | awk '{ print $2}'
+  register: result
+
+- name: All NIC names
+  ansible.builtin.debug:
+    msg: "{{ result.stdout_lines }}"
+
+- name: checking the NICs status
+  shell: "echo Network-Device:{{item }} Active:` ethtool {{ item }} | grep 'Link detected'| cut -d : -f 2`"
+  with_items:
+       - "{{ result.stdout_lines }}" 
+  register: task
+
+- name: NIC details with status 
+  debug: 
+   msg: "{{ task.results | map(attribute='stdout')| list }}"

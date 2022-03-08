@@ -1,0 +1,4 @@
+---
+# defaults file for ansible-system-facts-role
+total_cpu_cores: "4"
+total_memory_gb: "4"

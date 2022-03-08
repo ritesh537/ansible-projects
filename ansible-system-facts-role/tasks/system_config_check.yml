@@ -1,0 +1,21 @@
+---
+# tasks file for ansible-system-facts-role
+- name: check if memory is greater than {{ total_memory_gb }}GB
+  assert:
+      that:
+        - ansible_memtotal_mb | int >= {{ total_memory_gb }}*1024
+      fail_msg: "Memory is  {{ ansible_memtotal_mb }} MB and lesser than required {{ total_memory_gb }} GB "
+  register: result
+  failed_when:
+      - result.evaluated_to is defined
+      - result.evaluated_to == False
+
+- name: check if cpu cores are {{ total_cpu_cores }}
+  assert:
+     that:
+       - ansible_processor_cores | int == {{ total_cpu_cores }}
+     fail_msg: "CPU cores are {{ ansible_processor_cores }}  and not  {{ total_cpu_cores }} "
+  register: result
+  failed_when:
+      - result.evaluated_to is defined
+      - result.evaluated_to == False

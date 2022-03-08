@@ -1,0 +1,8 @@
+---
+# tasks file for ansible-system-facts-role
+- include: nic_details.yml
+  ignore_errors: True
+
+- include: system_config_check.yml
+  ignore_errors: True
+
