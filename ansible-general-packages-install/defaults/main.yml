@@ -1,0 +1,7 @@
+---
+# defaults file for ansible-general-packages-install
+general_packages: 
+    - git
+    - zip
+    - unzip
+    - vim

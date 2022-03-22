@@ -1,0 +1,7 @@
+---
+# tasks file for ansible-general-packages-install
+- name: installing packages
+  yum:
+   name: "{{ general_packages }}"
+   state: present
+  
