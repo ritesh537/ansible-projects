@@ -1,0 +1,4 @@
+---
+# tasks file for ansible-kubernetes-install
+- include: k8s-install.yml
+  when: ansible_distribution == "Ubuntu"

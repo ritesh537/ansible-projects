@@ -1,0 +1,51 @@
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: Update all packages to their latest version
+  apt:
+    upgrade: yes
+    update_cache: true
+
+- name: Install openssh and docker packages
+  apt:
+   pkg:
+    - openssh-server
+    - docker.io
+    - apt-transport-https
+    - curl
+
+- name: Add an Apt signing key
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add kubernetes repo
+  lineinfile:
+    path: "/etc/apt/sources.list.d/kubernetes.list"
+    line: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    create: yes
+
+- name: Update all packages to their latest version
+  apt:
+    update_cache: true
+
+- name: Install  kubeadm, kubelet and kubectl  packages
+  apt:
+   pkg:
+    - kubeadm
+    - kubelet
+    - kubectl
+
+- name: change the kubernetes config
+  lineinfile:
+    path: "/etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
+    line: 'Environment=”cgroup-driver=systemd/cgroup-driver=cgroupfs”'
+    insertafter: Environment=.*
